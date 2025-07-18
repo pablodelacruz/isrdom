@@ -53,7 +53,9 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
       const numericValue = parseInputValue(filtered);
       onInputChange(field, numericValue);
     } else {
-      const numericValue = parseFloat(value) || 0;
+      // Eliminar ceros a la izquierda y permitir solo números enteros positivos
+      const filtered = value.replace(/[^\d]/g, '').replace(/^0+(\d)/, '$1');
+      const numericValue = parseInt(filtered, 10) || 0;
       onInputChange(field, numericValue);
     }
   };
@@ -82,7 +84,7 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
             className={`w-full pl-12 pr-4 py-4 border ${inputError ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg font-medium ${
               inputs.totalIngresos === 0 ? 'text-gray-400' : 'text-black'
             }`}
-            placeholder="180,000.00"
+            placeholder="90,000.00"
             inputMode="decimal"
             pattern="[0-9,.]*"
             autoComplete="off"
@@ -108,10 +110,14 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
           <input
             type="number"
             id="numeroDependientes"
-            value={inputs.numeroDependientes}
-            onChange={(e) => handleInputChange('numeroDependientes', e.target.value)}
+            value={inputs.numeroDependientes === 0 ? '' : inputs.numeroDependientes}
+            onChange={(e) => {
+              // Si el usuario borra el valor, asumir 0
+              const val = e.target.value === '' ? '0' : e.target.value;
+              handleInputChange('numeroDependientes', val);
+            }}
             className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg font-medium"
-            placeholder="2"
+            placeholder="0"
             step="1"
             min="0"
             max="20"
