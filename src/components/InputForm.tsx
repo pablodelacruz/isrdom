@@ -51,7 +51,16 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
         setInputError('');
       }
       const numericValue = parseInputValue(filtered);
-      onInputChange(field, numericValue);
+          // Validar que el valor sea mayor a 0 y no NaN
+    if (isNaN(numericValue) || numericValue <= 0) {
+      setInputError('Por favor, ingresa un monto válido mayor a 0.');
+      onInputChange(field, 0); // Notificar valor inválido
+      return;
+    } else {
+      setInputError('');
+    }
+
+    onInputChange(field, numericValue);
     } else {
       // Eliminar ceros a la izquierda y permitir solo números enteros positivos
       const filtered = value.replace(/[^\d]/g, '').replace(/^0+(\d)/, '$1');
