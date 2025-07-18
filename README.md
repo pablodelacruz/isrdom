@@ -75,4 +75,4 @@ MIT. ¡Úsalo, modifícalo y comparte libremente!
 
 ---
 
-> Hecho con ❤️ para facilitar el cálculo de impuestos en México.
+> Hecho con ❤️ para facilitar el cálculo de impuestos en la Republica Dominicana.
