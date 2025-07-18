@@ -51,7 +51,6 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
 
   const handleBlur = () => {
     setDisplayValue(formatInputValue(inputs.totalIngresos));
-    onInputChange(field, numericValue);
   };
 
   return (
@@ -65,7 +64,7 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
             RD$
           </span>
           <input
-            type="number"
+            type="text"
             id="totalIngresos"
             value={displayValue}
             onChange={(e) => handleInputChange('totalIngresos', e.target.value)}
@@ -75,6 +74,9 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
               inputs.totalIngresos === 0 ? 'text-gray-400' : 'text-black'
             }`}
             placeholder="180,000.00"
+            inputMode="decimal"
+            pattern="[0-9,.]*"
+            autoComplete="off"
           />
         </div>
         <p className="text-sm text-gray-500 mt-2">
