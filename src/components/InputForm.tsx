@@ -11,6 +11,7 @@ interface InputFormProps {
 
 export function InputForm({ inputs, onInputChange, isCalculating }: InputFormProps) {
   const [displayValue, setDisplayValue] = useState('');
+  const [inputError, setInputError] = useState('');
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('es-DO', {
@@ -40,8 +41,16 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
 
   const handleInputChange = (field: keyof CalculationInputs, value: string) => {
     if (field === 'totalIngresos') {
-      setDisplayValue(value);
-      const numericValue = parseInputValue(value);
+      // Permitir solo números, comas y puntos
+      const filtered = value.replace(/[^\d.,]/g, '');
+      setDisplayValue(filtered);
+      // Validar si hay caracteres inválidos
+      if (value !== filtered) {
+        setInputError('Solo se permiten números, comas y puntos.');
+      } else {
+        setInputError('');
+      }
+      const numericValue = parseInputValue(filtered);
       onInputChange(field, numericValue);
     } else {
       const numericValue = parseFloat(value) || 0;
@@ -70,14 +79,18 @@ export function InputForm({ inputs, onInputChange, isCalculating }: InputFormPro
             onChange={(e) => handleInputChange('totalIngresos', e.target.value)}
             onBlur={handleBlur}
             onFocus={() => setDisplayValue(inputs.totalIngresos.toString())}
-            className={`w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg font-medium ${
+            className={`w-full pl-12 pr-4 py-4 border ${inputError ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg font-medium ${
               inputs.totalIngresos === 0 ? 'text-gray-400' : 'text-black'
             }`}
             placeholder="180,000.00"
             inputMode="decimal"
             pattern="[0-9,.]*"
             autoComplete="off"
+            aria-invalid={!!inputError}
           />
+          {inputError && (
+            <p className="text-red-600 text-sm mt-1">{inputError}</p>
+          )}
         </div>
         <p className="text-sm text-gray-500 mt-2">
           Equivalente anual: {formatCurrency(inputs.totalIngresos * 12)}
