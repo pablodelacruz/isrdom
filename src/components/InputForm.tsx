@@ -1,144 +1,182 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CalculationInputs } from '../types/isr';
-import { TAX_CONFIG } from '../utils/isrCalculator';
+import { TAX_CONFIG } from '../config/taxConfig';
+import { useInputFormatting } from '../hooks/useInputFormatting';
+import { RotateCcw } from 'lucide-react';
 
 interface InputFormProps {
   inputs: CalculationInputs;
   onInputChange: (field: keyof CalculationInputs, value: number) => void;
+  onClearAll: () => void;
   isCalculating: boolean;
 }
 
-export function InputForm({ inputs, onInputChange, isCalculating }: InputFormProps) {
-  const [displayValue, setDisplayValue] = useState('');
-  const [inputError, setInputError] = useState('');
+export function InputForm({ inputs, onInputChange, onClearAll, isCalculating }: InputFormProps) {
+  const salaryInputRef = useRef<HTMLInputElement>(null);
+  const dependentsInputRef = useRef<HTMLInputElement>(null);
+  
+  const {
+    displayValue,
+    inputError,
+    formatCurrency,
+    formatInputValue,
+    handleInputChange: handleFormatting,
+    setDisplayValue,
+    clearError
+  } = useInputFormatting();
 
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat('es-DO', {
-      style: 'currency',
-      currency: 'DOP',
-      minimumFractionDigits: 2
-    }).format(value);
-  };
-
-  const formatInputValue = (value: number): string => {
-    if (value === 0) return '';
-    return new Intl.NumberFormat('es-DO', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(value);
-  };
-
-  const parseInputValue = (value: string): number => {
-    // Remove all non-numeric characters except decimal point
-    const cleanValue = value.replace(/[^\d.]/g, '');
-    return parseFloat(cleanValue) || 0;
-  };
+  const [dependentsError, setDependentsError] = useState('');
 
   useEffect(() => {
     setDisplayValue(formatInputValue(inputs.totalIngresos));
-  }, [inputs.totalIngresos]);
+  }, [inputs.totalIngresos, formatInputValue, setDisplayValue]);
 
-  const handleInputChange = (field: keyof CalculationInputs, value: string) => {
-    if (field === 'totalIngresos') {
-      // Permitir solo números, comas y puntos
-      const filtered = value.replace(/[^\d.,]/g, '');
-      setDisplayValue(filtered);
-      // Validar si hay caracteres inválidos
-      if (value !== filtered) {
-        setInputError('Solo se permiten números, comas y puntos.');
-      } else {
-        setInputError('');
-      }
-      const numericValue = parseInputValue(filtered);
-          // Validar que el valor sea mayor a 0 y no NaN
-    if (isNaN(numericValue) || numericValue <= 0) {
-      setInputError('Por favor, ingresa un monto válido mayor a 0.');
-      onInputChange(field, 0); // Notificar valor inválido
-      return;
-    } else {
-      setInputError('');
-    }
+  const handleSalaryChange = (value: string) => {
+    const result = handleFormatting(value, 'salary');
+    setDisplayValue(value);
+    
+    // Always update the input value, even if it's 0 or invalid
+    // This allows the calculation hook to properly handle empty states
+    onInputChange('totalIngresos', result.value);
+  };
 
-    onInputChange(field, numericValue);
+  const handleDependentsChange = (value: string) => {
+    const result = handleFormatting(value, 'dependents');
+    
+    if (result.isValid) {
+      setDependentsError('');
+      onInputChange('numeroDependientes', result.value);
     } else {
-      // Eliminar ceros a la izquierda y permitir solo números enteros positivos
-      const filtered = value.replace(/[^\d]/g, '').replace(/^0+(\d)/, '$1');
-      const numericValue = parseInt(filtered, 10) || 0;
-      onInputChange(field, numericValue);
+      setDependentsError(inputError);
     }
   };
 
-  const handleBlur = () => {
+  const handleSalaryBlur = () => {
     setDisplayValue(formatInputValue(inputs.totalIngresos));
+    clearError();
+  };
+
+  const handleSalaryFocus = () => {
+    setDisplayValue(inputs.totalIngresos.toString());
+  };
+
+  const handleClearAll = () => {
+    onClearAll();
+    setDisplayValue('');
+    clearError();
+    setDependentsError('');
+    
+    // Focus on salary input after clearing
+    setTimeout(() => {
+      salaryInputRef.current?.focus();
+    }, 100);
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <label htmlFor="totalIngresos" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label 
+          htmlFor="totalIngresos" 
+          className="block text-sm font-semibold text-gray-700 mb-2"
+        >
           Ingresos Totales Mensuales
+          <span className="text-red-500 ml-1" aria-label="Campo requerido">*</span>
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
+          <span 
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium pointer-events-none"
+            aria-hidden="true"
+          >
             RD$
           </span>
           <input
+            ref={salaryInputRef}
             type="text"
             id="totalIngresos"
             value={displayValue}
-            onChange={(e) => handleInputChange('totalIngresos', e.target.value)}
-            onBlur={handleBlur}
-            onFocus={() => setDisplayValue(inputs.totalIngresos.toString())}
-            className={`w-full pl-12 pr-4 py-4 border ${inputError ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg font-medium ${
+            onChange={(e) => handleSalaryChange(e.target.value)}
+            onBlur={handleSalaryBlur}
+            onFocus={handleSalaryFocus}
+            className={`w-full pl-12 pr-4 py-3 lg:py-4 border ${inputError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} rounded-xl focus:ring-2 focus:border-transparent transition-all duration-200 text-base lg:text-lg font-medium ${
               inputs.totalIngresos === 0 ? 'text-gray-400' : 'text-black'
-            }`}
+            } touch-manipulation`}
             placeholder="90,000.00"
             inputMode="decimal"
             pattern="[0-9,.]*"
             autoComplete="off"
             aria-invalid={!!inputError}
+            aria-describedby={inputError ? 'salary-error' : 'salary-help'}
+            required
           />
           {inputError && (
-            <p className="text-red-600 text-sm mt-1">{inputError}</p>
+            <p id="salary-error" className="text-red-600 text-sm mt-1" role="alert">
+              {inputError}
+            </p>
           )}
         </div>
-        <p className="text-sm text-gray-500 mt-2">
+        <p id="salary-help" className="text-sm text-gray-500 mt-2">
           Equivalente anual: {formatCurrency(inputs.totalIngresos * 12)}
         </p>
       </div>
 
       <div>
-        <label htmlFor="numeroDependientes" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label 
+          htmlFor="numeroDependientes" 
+          className="block text-sm font-semibold text-gray-700 mb-2"
+        >
           Número de Dependientes
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
+          <span 
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium pointer-events-none"
+            aria-hidden="true"
+          >
             👥
           </span>
           <input
+            ref={dependentsInputRef}
             type="number"
             id="numeroDependientes"
             value={inputs.numeroDependientes === 0 ? '' : inputs.numeroDependientes}
             onChange={(e) => {
-              // Si el usuario borra el valor, asumir 0
               const val = e.target.value === '' ? '0' : e.target.value;
-              handleInputChange('numeroDependientes', val);
+              handleDependentsChange(val);
             }}
-            className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg font-medium"
+            className={`w-full pl-12 pr-4 py-3 lg:py-4 border ${dependentsError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} rounded-xl focus:ring-2 focus:border-transparent transition-all duration-200 text-base lg:text-lg font-medium touch-manipulation`}
             placeholder="0"
             step="1"
             min="0"
             max="20"
+            aria-invalid={!!dependentsError}
+            aria-describedby={dependentsError ? 'dependents-error' : 'dependents-help'}
           />
+          {dependentsError && (
+            <p id="dependents-error" className="text-red-600 text-sm mt-1" role="alert">
+              {dependentsError}
+            </p>
+          )}
         </div>
-        <p className="text-sm text-gray-500 mt-2">
+        <p id="dependents-help" className="text-sm text-gray-500 mt-2">
           Descuento: {formatCurrency(inputs.numeroDependientes * TAX_CONFIG.descuentoPorDependiente)} (RD$ {TAX_CONFIG.descuentoPorDependiente.toLocaleString()} por dependiente)
         </p>
       </div>
 
+      {/* Clear All Button */}
+      <div className="flex justify-center pt-2">
+        <button
+          onClick={handleClearAll}
+          disabled={inputs.totalIngresos === 0 && inputs.numeroDependientes === 0}
+          className="inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          aria-label="Limpiar todos los campos"
+        >
+          <RotateCcw className="w-4 h-4" />
+          <span>Limpiar Todo</span>
+        </button>
+      </div>
+
       {isCalculating && (
-        <div className="flex items-center justify-center py-4">
+        <div className="flex items-center justify-center py-4" role="status" aria-live="polite">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           <span className="ml-3 text-gray-600">Calculando...</span>
         </div>

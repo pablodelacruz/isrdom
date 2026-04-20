@@ -1,25 +1,5 @@
-import { ISRData, TaxConfig } from '../types/isr';
-
-// Configurable tax values - update these when Dominican government changes rates
-export const TAX_CONFIG: TaxConfig = {
-  // TSS Configuration
-  salarioMinimoCotizable: 15600.00,
-  afpPorciento: 2.87,
-  sfsPorciento: 3.04,
-  topeAfpMultiplier: 20, // 20 salarios mínimos
-  topeSfsMultiplier: 10, // 10 salarios mínimos
-  descuentoPorDependiente: 1715.46,
-  
-  // ISR Tax Brackets (annual amounts) - as of January 2016 from DGII
-  escala1Hasta: 416220.00,
-  escala2Hasta: 624329.00,
-  escala3Hasta: 867123.00,
-  escala3Monto: 31216.00,
-  escala4Monto: 79776.00,
-  escala2Porciento: 0.15,
-  escala3Porciento: 0.20,
-  escala4Porciento: 0.25,
-};
+import { ISRData } from '../types/isr';
+import { TAX_CONFIG } from '../config/taxConfig';
 
 export function createInitialData(): ISRData {
   return {

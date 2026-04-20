@@ -1,78 +1,159 @@
-# ISR DOM - Calculadora de ISR México 🇲🇽
+# Calculadora ISR República Dominicana
 
-¡Bienvenido a **ISR DOM**! Esta es una aplicación web moderna desarrollada con React, Vite y Tailwind CSS para calcular el Impuesto Sobre la Renta (ISR) en la Republica Dominicana de manera rápida, sencilla y visual.
+Una calculadora moderna y accesible para calcular el Impuesto Sobre la Renta (ISR), TSS, AFP, SFS y el monto neto a cobrar según las escalas vigentes de la DGII en República Dominicana.
 
 ## 🚀 Características
 
-- **Cálculo automático** del ISR mensual y anual según los parámetros oficiales.
-- Interfaz intuitiva y responsiva.
-- Resultados claros y desglosados.
-- 100% en español.
-- Desplegable fácilmente con Docker y Docker Compose.
+### Mejoras Implementadas
 
-## 🖥️ Demo Rápida
+#### **Calidad de Código y Arquitectura**
+- ✅ **Optimización de Rendimiento**: Eliminado el delay artificial de 300ms, implementado memoización con `useMemo`
+- ✅ **Validación y Manejo de Errores**: Validación robusta para casos extremos, sanitización de inputs, Error Boundaries
+- ✅ **Organización del Código**: 
+  - Componente `TaxInformationPanel` extraído
+  - Custom hooks: `useISRCalculation`, `useInputFormatting`, `useLocalStorage`
+  - Configuración centralizada en `src/config/taxConfig.ts`
 
-Puedes ejecutar la app localmente o en un contenedor Docker.
+#### **Experiencia de Usuario**
+- ✅ **Funciones Mejoradas**:
+  - Botón "Limpiar Todo" para resetear inputs
+  - Funcionalidad de exportación (formato texto)
+  - Historial de cálculos con localStorage
+  - Cálculos inteligentes (solo cuando hay salario válido)
 
-### 1. Clonar el repositorio
+- ✅ **Mejor Experiencia Móvil**:
+  - Diseño responsive mejorado
+  - Controles táctiles optimizados
+  - Enfoque mobile-first
+
+- ✅ **Accesibilidad**:
+  - Etiquetas ARIA apropiadas
+  - Navegación por teclado mejorada
+  - Soporte para lectores de pantalla
+  - Gestión de foco
+
+#### **Mejoras Técnicas**
+- ✅ **Persistencia de Datos**: localStorage para recordar inputs entre sesiones
+- ✅ **Testing**: Suite de pruebas unitarias con Vitest
+- ✅ **TypeScript Estricto**: Configuración estricta habilitada
+
+## 🛠️ Instalación
 
 ```bash
-git clone https://github.com/tuusuario/isrdom.git
+# Clonar el repositorio
+git clone <repository-url>
 cd isrdom
-```
 
-### 2. Ejecutar con Docker Compose
-
-Asegúrate de tener Docker y Docker Compose instalados.
-
-```bash
-docker-compose up --build
-```
-
-Luego abre tu navegador en [http://localhost:8080](http://localhost:8080)
-
-### 3. Ejecutar localmente (opcional)
-
-```bash
+# Instalar dependencias
 npm install
+
+# Ejecutar en modo desarrollo
 npm run dev
+
+# Construir para producción
+npm run build
+
+# Ejecutar pruebas
+npm run test
+
+# Ejecutar pruebas en modo watch
+npm run test:watch
+
+# Ejecutar pruebas con cobertura
+npm run test:coverage
 ```
 
-## 📝 Uso
+## 📱 Uso
 
-1. Ingresa tu salario mensual o anual.
-2. Haz clic en "Calcular".
-3. Visualiza el desglose de tu ISR y tu salario neto.
+1. **Ingresa tus datos**:
+   - Ingresos totales mensuales
+   - Número de dependientes
 
-## 📦 Estructura del Proyecto
+2. **Visualiza los resultados**:
+   - Monto neto a cobrar
+   - Desglose de ISR y TSS
+   - Información detallada de descuentos
+
+3. **Funciones adicionales**:
+   - **Exportar**: Descarga los resultados en formato texto
+   - **Limpiar**: Resetea todos los campos
+
+## 🧪 Testing
+
+El proyecto incluye pruebas unitarias completas:
+
+```bash
+# Ejecutar todas las pruebas
+npm run test
+
+# Ejecutar pruebas específicas
+npm run test -- --grep "ISR Calculator"
+
+# Ver cobertura de código
+npm run test:coverage
+```
+
+## 🏗️ Arquitectura
 
 ```
-├── src/
-│   ├── components/         # Componentes React reutilizables
-│   ├── types/              # Tipos TypeScript
-│   ├── utils/              # Lógica de cálculo ISR
-│   ├── App.tsx             # Componente principal
-│   └── main.tsx            # Punto de entrada
-├── public/                 # Archivos estáticos
-├── Dockerfile              # Imagen Docker de producción
-├── docker-compose.yml      # Orquestación de contenedores
-├── package.json            # Dependencias y scripts
-└── ...
+src/
+├── components/          # Componentes React
+│   ├── ErrorBoundary.tsx
+│   ├── InputForm.tsx
+│   ├── ISRCalculator.tsx
+│   ├── ResultsDisplay.tsx
+│   └── TaxInformationPanel.tsx
+├── config/             # Configuración
+│   └── taxConfig.ts
+├── hooks/              # Custom hooks
+│   ├── useInputFormatting.ts
+│   ├── useISRCalculation.ts
+│   └── useLocalStorage.ts
+├── types/              # Definiciones TypeScript
+│   └── isr.ts
+├── utils/              # Utilidades
+│   ├── __tests__/      # Pruebas unitarias
+│   └── isrCalculator.ts
+└── test/               # Configuración de testing
+    └── setup.ts
 ```
 
-## 🛠️ Tecnologías
+## 🎯 Características Técnicas
 
-- [React](https://react.dev/)
-- [Vite](https://vitejs.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Docker](https://www.docker.com/)
-- [Nginx](https://www.nginx.com/)
+- **React 18** con TypeScript
+- **Vite** para desarrollo y build
+- **Tailwind CSS** para estilos
+- **Vitest** para testing
+- **Lucide React** para iconos
+- **ESLint** para linting
+- **Configuración TypeScript estricta**
+
+## 📊 Escalas de ISR (2025)
+
+- **RD$ 0 - RD$ 416,220**: 0%
+- **RD$ 416,220.01 - RD$ 624,329**: 15%
+- **RD$ 624,329.01 - RD$ 867,123**: 20%
+- **Más de RD$ 867,123**: 25%
+
+## 🔧 Configuración TSS
+
+- **AFP**: 2.87% (tope: 20 salarios mínimos)
+- **SFS**: 3.04% (tope: 10 salarios mínimos)
+- **Descuento por dependiente**: RD$ 1,919.78
+- **Salario mínimo cotizable**: RD$ 15,600
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## ⚠️ Disclaimer
+
+Esta herramienta es solo para fines informativos. Para asesoría fiscal específica, consulte con un profesional contable o fiscal certificado.
 
 ## 📄 Licencia
 
-MIT. ¡Úsalo, modifícalo y comparte libremente!
-
----
-
-> Hecho con ❤️ para facilitar el cálculo de impuestos en la Republica Dominicana.
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
