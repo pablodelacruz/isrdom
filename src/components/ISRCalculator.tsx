@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { Calculator, DollarSign, TrendingUp, Download, RotateCcw, ChevronDown, ChevronRight } from 'lucide-react';
+import { DollarSign, TrendingUp, Download, RotateCcw, ChevronDown, ChevronRight } from 'lucide-react';
 
 // Types
 interface CalculationInputs {
@@ -261,9 +261,11 @@ Generado el: ${new Date().toLocaleDateString('es-DO')}
         {/* Header */}
         <div className="text-center mb-6 lg:mb-8">
           <div className="flex items-center justify-center mb-3 lg:mb-4">
-            <div className="bg-gradient-to-r from-primary-600 to-secondary-600 p-3 lg:p-4 rounded-2xl shadow-lg">
-              <Calculator className="w-8 lg:w-12 h-8 lg:h-12 text-white" />
-            </div>
+            <img 
+              src="/adding-machine.png" 
+              alt="Calculadora ISR" 
+              className="w-16 lg:w-24 h-16 lg:h-24 object-contain"
+            />
           </div>
           <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-2 lg:mb-3">
             Calculadora ISR República Dominicana
