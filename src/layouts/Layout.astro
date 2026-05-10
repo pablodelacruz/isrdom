@@ -1,0 +1,59 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Calculadora ISR República Dominicana 2026 - Calcula tu Impuesto Sobre la Renta, TSS, AFP, SFS y monto neto según las escalas vigentes de la DGII. Herramienta gratuita para empleados y empleadores." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href="https://calculadora-isr.dev/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:title" content="Calculadora ISR República Dominicana 2026" />
+    <meta property="og:description" content="Calcula tu Impuesto Sobre la Renta, TSS, AFP, SFS y monto neto según las escalas vigentes de la DGII. Herramienta gratuita." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://calculadora-isr.dev/" />
+    <meta property="og:locale" content="es_DO" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Calculadora ISR República Dominicana 2026" />
+    <meta name="twitter:description" content="Calcula tu Impuesto Sobre la Renta, TSS, AFP, SFS y monto neto según las escalas DGII." />
+
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Calculadora ISR República Dominicana",
+        "description": "Calculadora de Impuesto Sobre la Renta para República Dominicana. Calcula ISR, TSS, AFP, SFS y monto neto según las escalas vigentes de la DGII.",
+        "url": "https://calculadora-isr.dev/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "DOP"
+        }
+      }
+    </script>
+    <title>{title}</title>
+  </head>
+  <body class="h-full bg-gray-50">
+    <slot />
+  </body>
+</html>
+
+<style>
+  html {
+    font-family: system-ui, sans-serif;
+  }
+</style>

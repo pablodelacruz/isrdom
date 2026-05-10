@@ -1,17 +1,17 @@
 # Calculadora ISR República Dominicana
 
-Una calculadora moderna y accesible para calcular el Impuesto Sobre la Renta (ISR), TSS, AFP, SFS y el monto neto a cobrar según las escalas vigentes de la DGII en República Dominicana.
+Una calculadora moderna y accesible construida con **Astro** para calcular el Impuesto Sobre la Renta (ISR), TSS, AFP, SFS y el monto neto a cobrar según las escalas vigentes de la DGII en República Dominicana.
 
 ## 🚀 Características
 
 - **Cálculo automático** de ISR, TSS, AFP, SFS y monto neto
+- **Tema claro/oscuro** con persistencia en localStorage
 - **Interfaz responsive** optimizada para móviles y escritorio
 - **Validación inteligente** de datos de entrada
 - **Exportación** de resultados en formato texto
-- **Persistencia** de datos entre sesiones
+- **Rendimiento optimizado** con Astro (sitio estático)
 - **Accesibilidad completa** con soporte para lectores de pantalla
-- **Error handling** robusto con boundaries
-- **Testing** completo con Vitest
+- **Diseño moderno** con Tailwind CSS
 
 ## 🛠️ Instalación y Ejecución
 
@@ -37,42 +37,30 @@ npm run preview
 
 ### Opción 2: Docker (Recomendado)
 
-#### Usando Docker Compose (Más fácil)
+#### Usando Docker Compose
 
 ```bash
 # Clonar el repositorio
 git clone <repository-url>
 cd isrdom
 
-# Ejecutar en producción
-docker-compose up
+# Ejecutar la aplicación
+docker compose up
 
 # Ejecutar en segundo plano
-docker-compose up -d
+docker compose up -d
 
 # Ver logs
-docker-compose logs -f
+docker compose logs -f
 
 # Detener los contenedores
-docker-compose down
+docker compose down
 ```
 
-**Para desarrollo con hot-reload:**
-```bash
-# Ejecutar en modo desarrollo
-docker-compose --profile dev up isr-calculator-dev
-
-# En segundo plano
-docker-compose --profile dev up -d isr-calculator-dev
-```
-
-**URLs disponibles:**
-- **Producción**: http://localhost:3000
-- **Desarrollo**: http://localhost:3001
+La aplicación estará disponible en: **http://localhost:3000**
 
 #### Usando Docker directamente
 
-**Producción:**
 ```bash
 # Construir la imagen
 docker build -t isr-calculator .
@@ -90,32 +78,17 @@ docker logs -f isr-app
 docker stop isr-app && docker rm isr-app
 ```
 
-**Desarrollo:**
-```bash
-# Construir imagen de desarrollo
-docker build -f Dockerfile.dev -t isr-calculator-dev .
-
-# Ejecutar con volumen para hot-reload
-docker run -p 3001:5173 -v $(pwd):/app -v /app/node_modules isr-calculator-dev
-```
-
 #### Comandos útiles de Docker
 
 ```bash
 # Ver contenedores en ejecución
 docker ps
 
-# Ver todas las imágenes
-docker images
+# Reconstruir la imagen
+docker compose build --no-cache
 
 # Limpiar contenedores parados
 docker container prune
-
-# Limpiar imágenes no utilizadas
-docker image prune
-
-# Reconstruir sin cache
-docker-compose build --no-cache
 
 # Ver uso de recursos
 docker stats
@@ -124,17 +97,12 @@ docker stats
 ### Testing
 
 ```bash
-# Ejecutar todas las pruebas
+# El proyecto Astro no incluye testing por defecto
+# Para agregar testing, instalar Vitest:
+npm install -D vitest @vitest/ui jsdom @testing-library/react
+
+# Luego ejecutar:
 npm run test
-
-# Ejecutar pruebas en modo watch
-npm run test:watch
-
-# Ejecutar pruebas con cobertura
-npm run test:coverage
-
-# Ejecutar pruebas con interfaz visual
-npm run test:ui
 ```
 
 ## 📱 Uso
@@ -149,61 +117,33 @@ npm run test:ui
    - Información detallada de descuentos
 
 3. **Funciones adicionales**:
+   - **Tema**: Alterna entre modo claro y oscuro
    - **Exportar**: Descarga los resultados en formato texto
    - **Limpiar**: Resetea todos los campos
-
-## 🧪 Testing
-
-El proyecto incluye pruebas unitarias completas para garantizar la precisión de los cálculos:
-
-```bash
-# Ejecutar todas las pruebas
-npm run test
-
-# Ejecutar pruebas específicas
-npm run test -- --grep "ISR Calculator"
-
-# Ver cobertura de código
-npm run test:coverage
-
-# Interfaz visual para pruebas
-npm run test:ui
-```
 
 ## 🏗️ Arquitectura
 
 ```
 src/
 ├── components/          # Componentes React
-│   ├── ErrorBoundary.tsx
-│   ├── InputForm.tsx
 │   ├── ISRCalculator.tsx
-│   ├── ResultsDisplay.tsx
-│   └── TaxInformationPanel.tsx
-├── config/             # Configuración
-│   └── taxConfig.ts
-├── hooks/              # Custom hooks
-│   ├── useInputFormatting.ts
-│   ├── useISRCalculation.ts
-│   └── useLocalStorage.ts
-├── types/              # Definiciones TypeScript
-│   └── isr.ts
-├── utils/              # Utilidades
-│   ├── __tests__/      # Pruebas unitarias
-│   └── isrCalculator.ts
-└── test/               # Configuración de testing
-    └── setup.ts
+│   └── ThemeToggle.tsx
+├── layouts/            # Layouts de Astro
+│   └── Layout.astro
+├── pages/              # Páginas de Astro
+│   └── index.astro
+└── styles/             # Estilos globales
+    └── global.css
 ```
 
 ## 🎯 Características Técnicas
 
-- **React 18** con TypeScript
-- **Vite** para desarrollo y build
-- **Tailwind CSS** para estilos
-- **Vitest** para testing
+- **Astro 4.0** para sitios estáticos optimizados
+- **React 18** para componentes interactivos
+- **Tailwind CSS** para estilos con tema claro/oscuro
+- **TypeScript** para type safety
 - **Lucide React** para iconos
-- **ESLint** para linting
-- **Configuración TypeScript estricta**
+- **Build optimizado** con tree-shaking automático
 
 ## 📊 Escalas de ISR (2025)
 
